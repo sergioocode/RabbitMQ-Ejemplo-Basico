@@ -1,0 +1,15 @@
+﻿[
+  {
+    "Name": "API + consumidor",
+    "Projects": [
+      {
+        "Path": "RabbitMqExample.Consumer\\RabbitMqExample.Consumer.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "RabbitMqExample.Api\\RabbitMqExample.Api.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

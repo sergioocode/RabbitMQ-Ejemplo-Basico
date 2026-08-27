@@ -1,0 +1,12 @@
+﻿root = true
+
+[*]
+charset = utf-8-bom
+end_of_line = crlf
+insert_final_newline = true
+
+[*.cs]
+
+# CA1873: evita advertir por argumentos evaluados antes de comprobar
+# si el nivel de logging correspondiente está habilitado.
+dotnet_diagnostic.CA1873.severity = none

@@ -1,0 +1,48 @@
+﻿# Nombre con el que Docker Compose agrupa los recursos de este ejemplo.
+name: rabbitmq-basic-example
+
+services:
+  rabbit:
+    # Imagen oficial de RabbitMQ. La variante "management" incluye el panel web.
+    # Se fija una versión concreta para que el entorno sea reproducible.
+    image: rabbitmq:4.3.4-management
+    # Nombre del equipo dentro de la red de Docker. RabbitMQ lo utiliza también
+    # como parte del nombre de su nodo, que se mostrará como rabbit@rabbit.
+    hostname: rabbit
+
+    # Usuario y contraseña iniciales del broker para este entorno local.
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+    ports:
+      # Puerto AMQP: lo utilizan Consumer y Api para comunicarse.
+      - "5672:5672"
+
+      # Puerto HTTP del panel: http://localhost:15672
+      - "15672:15672"
+
+    volumes:
+      # Conserva colas y datos aunque el contenedor sea recreado.
+      - rabbitmq-data:/var/lib/rabbitmq
+
+    healthcheck:
+      # Docker ejecuta este diagnóstico dentro del contenedor. Un ping correcto
+      # confirma que RabbitMQ ya arrancó y puede atender conexiones.
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "check_port_connectivity"]
+
+      # Repite la comprobación cada diez segundos.
+      interval: 10s
+
+      # El diagnóstico puede tardar varios segundos en Docker Desktop.
+      timeout: 30s
+
+      # Tras cinco fallos consecutivos, Docker lo marcará como "unhealthy".
+      retries: 5
+
+      # Durante el primer minuto permite que RabbitMQ termine de arrancar.
+      start_period: 60s
+
+# Declara el volumen administrado por Docker que utiliza RabbitMQ.
+volumes:
+  rabbitmq-data:
